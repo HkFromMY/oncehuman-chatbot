@@ -13,3 +13,9 @@ This operation is done one time (during the beginning of the project) or occassi
 - It offers comprehensive set of tools and interfaces that make the development of scraping spiders easier. 
 - It provides enhanced speed and performance compared to alternatives like BeautifulSoup4 and Selenium through concurrent requests. 
 - It has powerful scheduler that allows filtering duplicate requests to avoid wastage of resources. In our case, there are pages that has links that points to each other which may cause the scrapers to be in deadlock state (crawling loops). Scrapy can avoid this with their scheduler that is equipped with duplication filter.
+
+## EDA on Scraped Wiki Data
+### Findings
+1. The data is nicely scraped as it is converted directly from HTML to markdown which is great for LLM to understand the dataset compared to normal text as markdown provides richer features and information.
+2. The text length of each page differs, but the information contained is important for the model to understand more about the game. 
+3. Thus, no additional pre-processing techniques are applied since the data is ready to be fed into the model. 

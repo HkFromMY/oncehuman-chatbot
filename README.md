@@ -19,3 +19,10 @@ This operation is done one time (during the beginning of the project) or occassi
 1. The data is nicely scraped as it is converted directly from HTML to markdown which is great for LLM to understand the dataset compared to normal text as markdown provides richer features and information.
 2. The text length of each page differs, but the information contained is important for the model to understand more about the game. 
 3. Thus, no additional pre-processing techniques are applied since the data is ready to be fed into the model. 
+
+## Setting up Airflow (extending Images for additional PyPi packages)
+1. Edit `Dockerfile` and `docker-compose.yaml` to add additional directories like `data`, changing the build from pre-built image to extended image.
+2. Run `docker compose build` to refresh the changes in `Dockerfile` and `docker-compose.yaml`.
+3. Run `docker compose up airflow-init` to initialize the database
+4. `docker compose up` to start the containers.
+5. Can run `docker compose down --volumes --rmi all` to remove everything for cleaning up.

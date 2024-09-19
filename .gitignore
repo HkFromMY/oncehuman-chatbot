@@ -2,3 +2,4 @@ venv
 **/__pycache__/
 **/data/
 **/logs/
+reddit_airflow/config/config.conf

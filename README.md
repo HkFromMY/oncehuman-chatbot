@@ -26,3 +26,4 @@ This operation is done one time (during the beginning of the project) or occassi
 3. Run `docker compose up airflow-init` to initialize the database
 4. `docker compose up` to start the containers.
 5. Can run `docker compose down --volumes --rmi all` to remove everything for cleaning up.
+6. If the docker still occupying memory after shutting down all the containers, can run `wsl --shutdown` to avoid eating up computational resources.

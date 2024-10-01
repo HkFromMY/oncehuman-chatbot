@@ -28,6 +28,17 @@ This operation is done one time (during the beginning of the project) or occassi
 5. Can run `docker compose down --volumes --rmi all` to remove everything for cleaning up.
 6. If the docker still occupying memory after shutting down all the containers, can run `wsl --shutdown` to avoid eating up computational resources.
 
+### How to connect Airflow with GCS?
+1. Create service account on IAM by assigning the right permission (following least-privilege principle).
+2. Export the key in JSON format.
+3. Place the desired JSON key in Airflow directory.
+4. Make sure the filepath is correctly configured in `docker-compose.yaml` with the following lines:
+```
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/gcs_service_account.json
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/opt/airflow/gcs_service_account.json'
+```
+5. Also ensure that the key is in the docker container by configuring `volumes` key.
+
 ## Some useful PostgresSQL commands
 - `\l` to list all databases
 - `\c <DATABASE-NAME>` to connect to that database (equivalent to `USE DATABASE <DATABASE-NAME>` in SQL Server)

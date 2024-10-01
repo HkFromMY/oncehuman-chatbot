@@ -8,8 +8,10 @@ from datetime import datetime, timedelta
 from airflow import DAG 
 from airflow.operators.python import PythonOperator 
 from pipelines.reddit_pipeline import (
-    extract_raw_posts,
-    upload_raw_posts_gcs
+    extract_raw_posts_pipeline,
+    upload_data_to_gcs_pipeline,
+    extract_comments_pipeline,
+    clean_all_localfiles_pipeline,
 )
 
 default_args = {
@@ -29,13 +31,30 @@ with DAG(
     
     extract_transform_post = PythonOperator(
         task_id='extract_raw_posts',
-        python_callable=extract_raw_posts,
+        python_callable=extract_raw_posts_pipeline,
     )
 
-    upload_raw_gcs = PythonOperator(
+    upload_posts_gcs = PythonOperator(
         task_id='upload_raw_posts_gcs',
-        python_callable=upload_raw_posts_gcs,
+        python_callable=upload_data_to_gcs_pipeline,
+        op_kwargs={'type': 'raw_posts'},
     )
 
-    extract_transform_post >> upload_raw_gcs
+    extract_comments = PythonOperator(
+        task_id='extract_comments_pipeline',
+        python_callable=extract_comments_pipeline,
+    )
+
+    upload_comments_to_gcs = PythonOperator(
+        task_id='upload_comments_to_gcs',
+        python_callable=upload_data_to_gcs_pipeline,
+        op_kwargs={'type': 'comments'}
+    )
+
+    cleaning_localfiles = PythonOperator(
+        task_id='clean_all_localfiles',
+        python_callable=clean_all_localfiles_pipeline
+    )
+
+    extract_transform_post >> upload_posts_gcs >> extract_comments >> upload_comments_to_gcs >> cleaning_localfiles
     

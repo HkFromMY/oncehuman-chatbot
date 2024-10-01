@@ -14,6 +14,7 @@ USER_AGENT = parser.get('reddit', 'reddit_user_agent')
 SUBREDDIT = parser.get('reddit', 'subreddit')
 BUILD_TOPIC = parser.get('reddit', 'build_topic')
 DISCUSSION_TOPIC = parser.get('reddit', 'discussion_topic')
+REDDIT_HOST = parser.get('reddit', 'host')
 
 # database credentials 
 DATABASE_HOST = parser.get('database', 'database_host')

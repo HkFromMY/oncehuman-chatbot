@@ -3,4 +3,6 @@ venv
 **/data/
 **/logs/
 **/.env
+reddit_airflow/db/
 reddit_airflow/config/config.conf
+gcs_service_account.json

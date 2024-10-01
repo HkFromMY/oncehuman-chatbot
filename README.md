@@ -27,3 +27,8 @@ This operation is done one time (during the beginning of the project) or occassi
 4. `docker compose up` to start the containers.
 5. Can run `docker compose down --volumes --rmi all` to remove everything for cleaning up.
 6. If the docker still occupying memory after shutting down all the containers, can run `wsl --shutdown` to avoid eating up computational resources.
+
+## Some useful PostgresSQL commands
+- `\l` to list all databases
+- `\c <DATABASE-NAME>` to connect to that database (equivalent to `USE DATABASE <DATABASE-NAME>` in SQL Server)
+- `\dt` to list all tables in the database connected.

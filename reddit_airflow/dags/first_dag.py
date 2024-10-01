@@ -2,8 +2,13 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.decorators import task 
 from airflow.operators.bash import BashOperator 
+from airflow.operators.python import PythonOperator
 
-import praw
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import pandas as pd 
 
 # First DAG to see if the environment is working
 
@@ -12,6 +17,23 @@ default_args = {
     'retries': 3,
     'retry_delay': timedelta(minutes=5),
 }
+
+from google.cloud import storage
+from etls.gcs import test_connection_gcs, upload_to_gcs
+
+def connect_gcs():
+    try:
+        storage_client = storage.Client(project='reddit-data-engineering')
+        buckets = storage_client.list_buckets()
+        print("Buckets:")
+        for bucket in buckets:
+            print(bucket.name)
+        print("Listed all storage buckets.")
+
+    except Exception as e:
+        print("Failed connecting to GCS:\n\n")
+        print(e)
+        raise Exception(e)
 
 with DAG(
     dag_id='first_dag',
@@ -26,4 +48,15 @@ with DAG(
         bash_command='echo "Hello World!"'
     )
 
-    hello_world
+    test = PythonOperator(
+        task_id='connect_gcs',
+        python_callable=test_connection_gcs,
+    )
+
+    upload_test = PythonOperator(
+        task_id='test_upload_gcs',
+        python_callable=upload_to_gcs,
+        op_args={'filename': 'test.txt'}
+    )
+
+    hello_world >> test >> upload_test

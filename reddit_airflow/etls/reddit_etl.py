@@ -109,3 +109,20 @@ def extract_comments(reddit, filename):
 
         # raise exception
         raise Exception(f"Error extracting comments: \n {repr(e)}")
+    
+def clean_post_data(filename):
+    df = pd.read_json(filename)
+
+    df = df.drop_duplicates()
+
+    # rewrite the original file
+    df.to_json(filename, mode='w', orient='records', indent=4)
+
+def clean_comments_data(filename):
+    df = pd.read_json(filename)
+
+    df = df.drop_duplicates()
+    df[['ups', 'downs', 'likes']] = df[['ups', 'downs', 'likes']].fillna(0).astype(np.int16)
+
+    # rewrite the original file
+    df.to_json(filename, mode='w', orient='records', indent=4)

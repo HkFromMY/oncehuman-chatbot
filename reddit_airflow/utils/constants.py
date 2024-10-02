@@ -22,6 +22,8 @@ DATABASE_NAME = parser.get('database', 'database_name')
 DATABASE_PORT = parser.get('database', 'database_port')
 DATABASE_USERNAME = parser.get('database', 'database_username')
 DATABASE_PASSWORD = parser.get('database', 'database_password')
+DATABASE_POSTS_TABLE = parser.get('database', 'post_table')
+DATABASE_COMMENTS_TABLE = parser.get('database', 'comment_table')
 
 # GCP 
 GCP_PROJECT_ID = parser.get('gcp', 'project_id')

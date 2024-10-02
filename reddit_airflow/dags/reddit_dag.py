@@ -11,6 +11,8 @@ from pipelines.reddit_pipeline import (
     extract_raw_posts_pipeline,
     upload_data_to_gcs_pipeline,
     extract_comments_pipeline,
+    transform_data_pipeline,
+    load_to_postgres_pipeline,
     clean_all_localfiles_pipeline,
 )
 
@@ -51,10 +53,20 @@ with DAG(
         op_kwargs={'type': 'comments'}
     )
 
+    transform_data = PythonOperator(
+        task_id='transform_data',
+        python_callable=transform_data_pipeline,
+    )
+
+    load_to_postgres = PythonOperator(
+        task_id='load_to_postgres',
+        python_callable=load_to_postgres_pipeline,
+    )
+    
     cleaning_localfiles = PythonOperator(
         task_id='clean_all_localfiles',
         python_callable=clean_all_localfiles_pipeline
     )
 
-    extract_transform_post >> upload_posts_gcs >> extract_comments >> upload_comments_to_gcs >> cleaning_localfiles
+    extract_transform_post >> extract_comments >> [upload_posts_gcs, upload_comments_to_gcs] >> transform_data >> load_to_postgres >> cleaning_localfiles
     

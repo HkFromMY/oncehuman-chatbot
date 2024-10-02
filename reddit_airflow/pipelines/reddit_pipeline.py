@@ -2,11 +2,14 @@ from etls.reddit_etl import (
     connect_reddit,
     extract_posts,
     extract_comments,
+    clean_post_data,
+    clean_comments_data,
 )
 from etls.gcs import (
     test_connection_gcs,
     upload_to_gcs,
 )
+from etls.postgres import load_to_postgres
 from utils.constants import DISCUSSION_TOPIC
 from utils.file import clean_local_file
 from utils.discord import send_discord_message
@@ -33,7 +36,7 @@ def upload_data_to_gcs_pipeline(type, ti):
     src_filename = f'data/{upload_file}'
     dst_filename = f'{type}/{upload_file}'
 
-    # test if the connection to GCS is successful
+    # test if the connection to GCS is successful, raise Exception if not success
     test_connection_gcs()
 
     # upload local files to GCS
@@ -47,6 +50,20 @@ def extract_comments_pipeline(ti):
     comments_filename = extract_comments(reddit, post_filename)
 
     ti.xcom_push(key='comments_filename', value=comments_filename)
+
+def transform_data_pipeline(ti):
+    post_filename = ti.xcom_pull(key='raw_posts_filename')
+    comments_filename = ti.xcom_pull(key='comments_filename')
+
+    clean_post_data(f'data/{post_filename}')
+    clean_comments_data(f'data/{comments_filename}')
+
+def load_to_postgres_pipeline(ti):
+    post_filename = ti.xcom_pull(key='raw_posts_filename')
+    comments_filename = ti.xcom_pull(key='comments_filename')
+
+    load_to_postgres(f'data/{post_filename}', 'reddit_posts')
+    load_to_postgres(f'data/{comments_filename}', 'reddit_comments')
 
 def clean_all_localfiles_pipeline(ti):
     post_filename = ti.xcom_pull(key='raw_posts_filename')

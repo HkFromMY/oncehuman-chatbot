@@ -1,8 +1,24 @@
 CREATE TABLE IF NOT EXISTS "reddit_posts" (
-	"subreddit_id" VARCHAR(255), 
-	"title" TEXT,
-	"text" TEXT,
-	"comments" TEXT,
-	"post_date" TIMESTAMP,
+	"id" VARCHAR(20) PRIMARY KEY, 
+	"title" TEXT NOT NULL,
+	"selftext" TEXT NOT NULL,
+	"num_comments" INTEGER,
+	"created_utc" TIMESTAMP,
+	"upvote_ratio" NUMERIC(3, 2), 
+	"permalink" TEXT,
 	"created_at" TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS "reddit_comments" (
+	"id" VARCHAR(20) PRIMARY KEY, 
+	"post_id" VARCHAR(20),
+	"text" TEXT NOT NULL,
+	"created_utc" TIMESTAMP,
+	"ups" INTEGER, 
+	"downs" INTEGER,
+	"likes" INTEGER,
+	"created_at" TIMESTAMP DEFAULT NOW(),
+	CONSTRAINT fk_posts
+		FOREIGN KEY(post_id)
+			REFERENCES reddit_posts(id)
 );

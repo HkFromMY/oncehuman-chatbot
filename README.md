@@ -43,3 +43,9 @@ This operation is done one time (during the beginning of the project) or occassi
 - `\l` to list all databases
 - `\c <DATABASE-NAME>` to connect to that database (equivalent to `USE DATABASE <DATABASE-NAME>` in SQL Server)
 - `\dt` to list all tables in the database connected.
+
+## Loading data to PostgresSQL
+- Refer to `sql/` folder in `dags/` directory for table definition.
+- Data is loaded using `to_sql()` method provided by `pandas`, `chunksize` is configured to load data efficient bit by bit to avoid clumping the database with a lot of data at once.
+- Better alternative would be using BigQuery as data lake used is GCS, not only that, but the data type supported is also rich like `ARRAY` which can help querying faster.
+

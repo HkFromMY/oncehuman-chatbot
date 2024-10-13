@@ -4,7 +4,6 @@ from utils.constants import (
     GCP_BUCKET_NAME
 )
 from utils.discord import send_discord_message
-from utils.file import clean_local_file
 
 def test_connection_gcs():
     """
@@ -34,7 +33,6 @@ def upload_to_gcs(src_filename, dst_filename):
         print(f"File successfully uploaded to GCS. Src File: {src_filename} Dst File: {dst_filename}")
 
     except Exception as e:
-        clean_local_file(src_filename)
 
         # send to discord
         send_discord_message(f"Error uploading local files (Src: **{src_filename}** Dst: **{dst_filename}**) to GCS: \n {repr(e)}")

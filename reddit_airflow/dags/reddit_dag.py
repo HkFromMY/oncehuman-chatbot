@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from datetime import datetime, timedelta
 from airflow import DAG 
 from airflow.operators.python import PythonOperator 
+from airflow.utils.trigger_rule import TriggerRule
 from pipelines.reddit_pipeline import (
     extract_raw_posts_pipeline,
     upload_data_to_gcs_pipeline,
@@ -63,9 +64,11 @@ with DAG(
         python_callable=load_to_postgres_pipeline,
     )
     
+    # run this function no matter the upstream tasks succeed or not
     cleaning_localfiles = PythonOperator(
         task_id='clean_all_localfiles',
-        python_callable=clean_all_localfiles_pipeline
+        python_callable=clean_all_localfiles_pipeline,
+        trigger_rule=TriggerRule.ALL_DONE,
     )
 
     extract_transform_post >> extract_comments >> [upload_posts_gcs, upload_comments_to_gcs] >> transform_data >> load_to_postgres >> cleaning_localfiles

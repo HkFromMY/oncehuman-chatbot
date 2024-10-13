@@ -22,3 +22,12 @@ CREATE TABLE IF NOT EXISTS "reddit_comments" (
 		FOREIGN KEY(post_id)
 			REFERENCES reddit_posts(id)
 );
+
+CREATE TABLE IF NOT EXISTS "reddit_docs" (
+	"doc_id" VARCHAR(20) NOT NULL, 
+	"document" TEXT NOT NULL, 
+	"created_at" TIMESTAMP DEFAULT NOW(),
+	CONSTRAINT fk_posts
+		FOREIGN KEY(doc_id)
+			REFERENCES reddit_posts(id)
+);

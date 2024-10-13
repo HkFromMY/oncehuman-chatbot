@@ -25,10 +25,10 @@ default_args = {
 
 with DAG(
     dag_id='reddit_dag_pipeline',
-    description='A data pipeline that ingest and transform data from Reddit and load to postgres',
+    description='A data pipeline that ingest and pre-process data from Reddit and load to postgres',
     default_args=default_args,
     start_date=datetime(2024, 9, 1),
-    schedule_interval='@daily',
+    schedule_interval='0 0 * * *',
     catchup=False,
 ) as dag:
     

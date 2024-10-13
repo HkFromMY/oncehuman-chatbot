@@ -9,7 +9,9 @@ from etls.gcs import (
     test_connection_gcs,
     upload_to_gcs,
 )
-from etls.postgres import load_to_postgres
+from etls.postgres import (
+    load_to_postgres,
+)
 from utils.constants import DISCUSSION_TOPIC
 from utils.file import clean_local_file
 from utils.discord import send_discord_message

@@ -31,6 +31,9 @@ def read_json(filename):
         raise Exception(f"Error reading from JSON: \n {repr(e)}")
     
 def clean_local_file(filename):
+    """
+        Delete all local files on airflow after uploading to GCS
+    """
     if os.path.exists(filename):
         os.remove(filename)
         print(f"File: {filename} removed successfully")

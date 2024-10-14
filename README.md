@@ -52,3 +52,8 @@ This operation is done one time (during the beginning of the project) or occassi
 ## Problems with Reddit
 - The time filter can only works for current `day`, `week`, and `month`. This means that it is impossible to filter by a date period which can cause problems because usually a post can take time to grow engagement.
 - Thus, a workaround is proposed which is to create another pipeline that does the same thing but on a monthly basis. In this pipeline, it will update the existing posts in the database and add new items/comments. 
+
+## Embedding Model References:
+- (MTEB Leaderboard)[https://huggingface.co/spaces/mteb/leaderboard]
+- (all-mpnet-base-v2)[https://huggingface.co/sentence-transformers/all-mpnet-base-v2]
+- (all-MiniLM-L6-v2)[https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2]

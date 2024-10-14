@@ -1,2 +1,8 @@
 praw
 apache-airflow[google]
+langchain
+langchain-pinecone
+langchain-text-splitters
+langchain-huggingface
+pinecone
+pinecone-notebooks

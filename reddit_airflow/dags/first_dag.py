@@ -9,6 +9,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd 
+from pinecone import Pinecone, ServerlessSpec
 
 # First DAG to see if the environment is working
 
@@ -59,4 +60,4 @@ with DAG(
         op_args={'filename': 'test.txt'}
     )
 
-    hello_world >> test >> upload_test
+    hello_world

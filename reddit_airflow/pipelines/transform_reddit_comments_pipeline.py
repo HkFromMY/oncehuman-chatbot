@@ -1,4 +1,4 @@
-from etls.postgres import (
+from etls.transform_reddit_comments_etl import (
     transform_comments_data,
 )
 from etls.gcs import (

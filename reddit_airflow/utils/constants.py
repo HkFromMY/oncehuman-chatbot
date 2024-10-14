@@ -29,6 +29,16 @@ DATABASE_COMMENTS_TABLE = parser.get('database', 'comment_table')
 GCP_PROJECT_ID = parser.get('gcp', 'project_id')
 GCP_BUCKET_NAME = parser.get('gcp', 'bucket_name')
 
+# pinecone 
+PINECONE_API_KEY = parser.get('pinecone', 'pinecone_api_key')
+PINECONE_INDEX_NAME = parser.get('pinecone', 'pinecone_index_name')
+PINECONE_INDEX_DIMENSION = int(parser.get('pinecone', 'pinecone_index_dimension'))
+
+# chunk config
+CHUNK_SIZE = int(parser.get('langchain', 'chunk_size'))
+CHUNK_OVERLAP = int(parser.get('langchain', 'chunk_overlap'))
+EMBEDDING_MODEL_NAME = parser.get('langchain', 'embedding_model_name')
+
 POST_FIELDS = [
     'id',
     'selftext',

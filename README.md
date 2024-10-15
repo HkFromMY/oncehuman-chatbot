@@ -54,9 +54,9 @@ This operation is done one time (during the beginning of the project) or occassi
 - Thus, a workaround is proposed which is to create another pipeline that does the same thing but on a monthly basis. In this pipeline, it will update the existing posts in the database and add new items/comments. 
 
 ## Embedding Model References:
-- (MTEB Leaderboard)[https://huggingface.co/spaces/mteb/leaderboard]
-- (all-mpnet-base-v2)[https://huggingface.co/sentence-transformers/all-mpnet-base-v2]
-- (all-MiniLM-L6-v2)[https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2]
+- [MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard)
+- [all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
+- [all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
 
 ## Challenges Faced
 - The airflow project consumes too much RAM memory because initially `HuggingFaceEmbeddings` was used which downloads the embedding and run the model locally. This can cause latency to the system and does not follow best practice as Airflow is an orchestrator. 

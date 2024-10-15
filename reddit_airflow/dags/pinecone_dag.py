@@ -7,8 +7,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from datetime import datetime, timedelta
 from airflow import DAG 
 from airflow.operators.python import PythonOperator 
+from airflow.utils.trigger_rule import TriggerRule
 from pipelines.pinecone_pipeline import (
     load_documents_to_pinecone_pipeline,
+    load_failed_docs_to_pinecone_pipeline,
+    clean_all_localfiles_pipeline,
 )
 
 default_args = {
@@ -31,4 +34,16 @@ with DAG(
         python_callable=load_documents_to_pinecone_pipeline,
     )
 
-    load_documents_to_pinecone
+    retry_upload_to_pinecone = PythonOperator(
+        task_id='retry_upload_to_pinecone',
+        python_callable=load_failed_docs_to_pinecone_pipeline,
+    )
+
+    # clean the file no matter what
+    clean_file = PythonOperator(
+        task_id='clean_local_files',
+        python_callable=clean_all_localfiles_pipeline,
+        trigger_rule=TriggerRule.ALL_DONE,
+    )
+
+    load_documents_to_pinecone >> retry_upload_to_pinecone >> clean_file

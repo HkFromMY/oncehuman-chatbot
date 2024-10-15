@@ -25,6 +25,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 import pandas as pd
 from uuid import uuid4
+import os
 
 def create_pinecone_index():
     """
@@ -109,11 +110,86 @@ def load_documents_to_pinecone(pc_index, chunked_docs):
     try:
         embedding_model = HuggingFaceEndpointEmbeddings(model=EMBEDDING_MODEL_NAME, huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN)
         vector_store = PineconeVectorStore(index=pc_index, embedding=embedding_model)
-
         ids = [str(uuid4()) for _ in range(len(chunked_docs))]
-        vector_store.add_documents(documents=chunked_docs, ids=ids)
+
+        # load data by batches of 5 if has more than 5 docs (tested, if more than this, the risk will be higher)
+        if len(chunked_docs) > 5:
+            failed_ids = []
+            failed_docs = []
+            partitioned_ids = split_into_chunks(ids, 5)
+            partitioned_docs = split_into_chunks(chunked_docs, 5)
+
+            for index in range(len(partitioned_docs)):
+                try:
+                    vector_store.add_documents(documents=partitioned_docs[index], ids=partitioned_ids[index])
+
+                except Exception as e:
+                    # extend to make 1-D list
+                    failed_ids.extend(partitioned_ids[index])
+                    failed_docs.extend(partitioned_docs[index])
+
+                finally:
+                    # wait for 1 second, no matter the upload success or not to avoid spamming the model endpoint
+                    time.sleep(1)
+        else:
+            vector_store.add_documents(documents=chunked_docs, ids=ids)
+
+        # if there's still failed document, write to a JSON file which will be retried in downstream task
+        if len(failed_docs) > 0:
+            failed_dict = { 'ids': failed_ids, 'docs': failed_docs }
+            failed_df = pd.DataFrame(failed_dict)
+
+            today = datetime.now().strftime('%Y%m%d')
+            output_filename = f'failed_docs_{today}.json'
+            failed_df.to_json(f'data/{output_filename}', orient='records', index=False, indent=4)
+            
+            return output_filename
+        
+        else:
+            return ''
 
     except Exception as e:
-        send_discord_message(f"Error loading chunked documents to Pinecone: \n {repr(e)}")
+        # this clause is to catch error when the number of docs is less than 5
+        failed_dict = { 'ids': ids, 'docs': chunked_docs }
+        failed_df = pd.DataFrame(failed_dict)
 
-        raise Exception(f"Something wrong when loading chunked documents to Pinecone: \n {repr(e)}")
+        today = datetime.now().strftime('%Y%m%d')
+        output_filename = f'failed_docs_{today}.json'
+        failed_df.to_json(f'data/{output_filename}', orient='records', index=False, indent=4)
+
+        return output_filename
+
+def split_into_chunks(iterable, chunk_size):
+    """
+        A helper function to split a list into fixed size of chunks
+        Returns a 2-D list
+    """
+    chunks = []
+    
+    for i in range(0, len(iterable), chunk_size):
+        chunks.append(iterable[i:i + chunk_size])
+    
+    return chunks
+
+def retry_upload_to_pinecone(failed_doc_filename):
+    """
+        Retry uploading the documents that are failed to upload due to low response time in HuggingFace Embeddings
+        Failed doc occurs and recorded in the function `load_documents_to_pinecone`
+    """
+    if os.path.exists(failed_doc_filename):
+        embedding_model = HuggingFaceEndpointEmbeddings(model=EMBEDDING_MODEL_NAME, huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN)
+        vector_store = PineconeVectorStore(index=PINECONE_INDEX_NAME, embedding=embedding_model)
+
+        failed_df = pd.read_json(failed_doc_filename)
+        ids = failed_df['ids'].tolist()
+        docs = failed_df['docs'].tolist()
+
+        # upload the doc 1 by 1
+        for index in range(len(docs)):
+            vector_store.add_documents(documents=docs[index], ids=ids[index])
+            time.sleep(1) # wait for 1 second
+
+    else:
+        send_discord_message(f'Filename received: {failed_doc_filename} does not exist!')
+
+        raise FileNotFoundError(f'Filename received: {failed_doc_filename} does not exist!')

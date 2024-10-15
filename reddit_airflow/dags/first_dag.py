@@ -50,9 +50,4 @@ with DAG(
         bash_command='echo "Hello World!"'
     )
 
-    embed = PythonOperator(
-        task_id='embed',
-        python_callable=embed_something
-    )
-
-    hello_world >> embed
+    hello_world

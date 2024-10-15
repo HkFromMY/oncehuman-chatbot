@@ -34,10 +34,11 @@ PINECONE_API_KEY = parser.get('pinecone', 'pinecone_api_key')
 PINECONE_INDEX_NAME = parser.get('pinecone', 'pinecone_index_name')
 PINECONE_INDEX_DIMENSION = int(parser.get('pinecone', 'pinecone_index_dimension'))
 
-# chunk config
+# langchain config
 CHUNK_SIZE = int(parser.get('langchain', 'chunk_size'))
 CHUNK_OVERLAP = int(parser.get('langchain', 'chunk_overlap'))
 EMBEDDING_MODEL_NAME = parser.get('langchain', 'embedding_model_name')
+HUGGINGFACEHUB_API_TOKEN = parser.get('langchain', 'huggingfacehub_api_token')
 
 POST_FIELDS = [
     'id',

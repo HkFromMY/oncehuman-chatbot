@@ -4,5 +4,6 @@ langchain
 langchain-pinecone
 langchain-text-splitters
 langchain-huggingface
+huggingface-hub
 pinecone
 pinecone-notebooks

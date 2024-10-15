@@ -12,11 +12,12 @@ from utils.constants import (
     CHUNK_OVERLAP,
     EMBEDDING_MODEL_NAME,
     REDDIT_HOST,
+    HUGGINGFACEHUB_API_TOKEN,
 )
 from pinecone import Pinecone, ServerlessSpec
 import time
 
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_huggingface.embeddings.huggingface_endpoint import HuggingFaceEndpointEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_core.documents import Document 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -106,7 +107,7 @@ def load_documents_to_pinecone(pc_index, chunked_docs):
         Load split data to Pinecone
     """
     try:
-        embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME)
+        embedding_model = HuggingFaceEndpointEmbeddings(model=EMBEDDING_MODEL_NAME, huggingfacehub_api_token=HUGGINGFACEHUB_API_TOKEN)
         vector_store = PineconeVectorStore(index=pc_index, embedding=embedding_model)
 
         ids = [str(uuid4()) for _ in range(len(chunked_docs))]

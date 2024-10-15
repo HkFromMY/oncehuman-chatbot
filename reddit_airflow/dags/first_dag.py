@@ -10,7 +10,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pandas as pd 
 from pinecone import Pinecone, ServerlessSpec
-
+from langchain_huggingface.embeddings.huggingface_endpoint import HuggingFaceEndpointEmbeddings
+from utils.constants import EMBEDDING_MODEL_NAME, HUGGINGFACEHUB_API_TOKEN
 # First DAG to see if the environment is working
 
 default_args = {
@@ -49,15 +50,9 @@ with DAG(
         bash_command='echo "Hello World!"'
     )
 
-    test = PythonOperator(
-        task_id='connect_gcs',
-        python_callable=test_connection_gcs,
+    embed = PythonOperator(
+        task_id='embed',
+        python_callable=embed_something
     )
 
-    upload_test = PythonOperator(
-        task_id='test_upload_gcs',
-        python_callable=upload_to_gcs,
-        op_args={'filename': 'test.txt'}
-    )
-
-    hello_world
+    hello_world >> embed

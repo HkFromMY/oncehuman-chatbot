@@ -11,6 +11,7 @@ from utils.constants import (
     CHUNK_SIZE,
     CHUNK_OVERLAP,
     EMBEDDING_MODEL_NAME,
+    REDDIT_HOST,
 )
 from pinecone import Pinecone, ServerlessSpec
 import time
@@ -60,15 +61,18 @@ def load_documents_from_postgres():
         today_sql = datetime.now().strftime('%Y-%m-%d')
         engine = create_engine(f'postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}')
         doc_df = pd.read_sql_query(f'SELECT * FROM \"reddit_docs\" WHERE DATE_TRUNC(\'day\', created_at) = \'{today_sql}\';', con=engine)
+        post_df = pd.read_sql_query(f'SELECT * FROM \"reddit_posts\" WHERE DATE_TRUNC(\'day\', created_at) = \'{today_sql}\';', con=engine)
+        joined_df = pd.merge(doc_df, post_df, how='left', left_on='doc_id', right_on='id')
 
-        doc_df['created_at_str'] = doc_df['created_at'].dt.strftime('%Y-%m-%d %H:%M:%S')
+        joined_df['created_at_str'] = joined_df['created_at_x'].dt.strftime('%Y-%m-%d %H:%M:%S')
+        joined_df['source_url'] = REDDIT_HOST + joined_df['permalink']
 
         documents = []
-        for _, row in doc_df.iterrows():
+        for _, row in joined_df.iterrows():
             documents.append(
                 Document(
                     page_content=row['document'],
-                    metadata={ 'created_at': row['created_at_str'], 'source': 'reddit', 'id': row['doc_id'] }
+                    metadata={ 'created_at': row['created_at_str'], 'source': 'reddit', 'source_url': row['source_url'], 'id': row['doc_id'] },
                 )
             )
 

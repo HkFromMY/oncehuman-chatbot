@@ -57,3 +57,10 @@ This operation is done one time (during the beginning of the project) or occassi
 - (MTEB Leaderboard)[https://huggingface.co/spaces/mteb/leaderboard]
 - (all-mpnet-base-v2)[https://huggingface.co/sentence-transformers/all-mpnet-base-v2]
 - (all-MiniLM-L6-v2)[https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2]
+
+## Challenges Faced
+- The airflow project consumes too much RAM memory because initially `HuggingFaceEmbeddings` was used which downloads the embedding and run the model locally. This can cause latency to the system and does not follow best practice as Airflow is an orchestrator. 
+- Switching to embedding endpoint also leads to `500: Internal Server Error` by `HuggingFaceEndpointEmbeddings` because there are too many number of documents to be embed at once, so the model timeout. 
+
+## Solutions
+- Embed the documents by batches to avoid overwhelming the model and cause errors. 

@@ -31,7 +31,7 @@ def load_failed_docs_to_pinecone_pipeline(ti):
     failed_doc_filename = ti.xcom_pull(key='failed_doc_filename')
     
     if failed_doc_filename != '':
-        retry_upload_to_pinecone(failed_doc_filename)
+        retry_upload_to_pinecone(f'data/{failed_doc_filename=}')
 
 def clean_all_localfiles_pipeline(ti):
     """
@@ -40,6 +40,6 @@ def clean_all_localfiles_pipeline(ti):
     failed_doc_filename = ti.xcom_pull(key='failed_doc_filename')
 
     if failed_doc_filename != '':
-        clean_local_file(failed_doc_filename)
+        clean_local_file(f'data/{failed_doc_filename}')
 
 

@@ -17,12 +17,15 @@ def load_documents_to_pinecone_pipeline(ti):
     # load documents from postgres
     documents = load_documents_from_postgres()
 
-    # split documents into chunks
-    chunked_docs = split_documents_to_chunks(documents)
+    if len(documents) != 0:
+        # chunk documents and load to pinecone
+        chunked_docs = split_documents_to_chunks(documents)
+        failed_doc_filename = load_documents_to_pinecone(index, chunked_docs)
+        ti.xcom_push(key='failed_doc_filename', value=failed_doc_filename)
 
-    # load documents to pinecone
-    failed_doc_filename = load_documents_to_pinecone(index, chunked_docs)
-    ti.xcom_push(key='failed_doc_filename', value=failed_doc_filename)
+    else:
+        # notify downstream task, no need to process/retry anything
+        ti.xcom_push(key='failed_doc_filename', value='')
 
 def load_failed_docs_to_pinecone_pipeline(ti):
     """

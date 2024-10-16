@@ -64,8 +64,13 @@ def load_documents_from_postgres():
         engine = create_engine(f'postgresql://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}')
         doc_df = pd.read_sql_query(f'SELECT * FROM \"reddit_docs\" WHERE DATE_TRUNC(\'day\', created_at) = \'{today_sql}\';', con=engine)
         post_df = pd.read_sql_query(f'SELECT * FROM \"reddit_posts\" WHERE DATE_TRUNC(\'day\', created_at) = \'{today_sql}\';', con=engine)
-        joined_df = pd.merge(doc_df, post_df, how='left', left_on='doc_id', right_on='id')
 
+        if doc_df.shape[0] == 0:
+            # if there's no documents in the database, then the function stops here, 
+            # because the pandas will return dataframe with all data type of object, which can ruin the processb elow
+            return []
+        
+        joined_df = pd.merge(doc_df, post_df, how='left', left_on='doc_id', right_on='id')
         joined_df['created_at_str'] = joined_df['created_at_x'].dt.strftime('%Y-%m-%d %H:%M:%S')
         joined_df['source_url'] = REDDIT_HOST + joined_df['permalink']
 

@@ -1,5 +1,11 @@
 # OnceHuman Chatbot
 
+## Background
+Once Human is a sandbox survival game. Unleashed after the opening of a mysterious inter-dimensional silver door, a substance called Stardust has polluted the world, twisting it into a horrific landscape. Following a new style, Once Human combines the rationality in science with the mysteries of the unknown. The open-world environment challenges you to survive under the pressure of extreme conditions, otherworldly creatures, and vicious humanity. Gathering resources, building homes, fighting against aberrant monsters, and more make it possible to survive in the wildness. [[Taken from here](https://once-human.fandom.com/wiki/Main_Page)]
+
+### Problem Statement
+Finding resources on the Internet is usually time-consuming and tedious as there are a lot of resources online. Therefore, to increase the efficiency of searching desired information, a chatbot implemented with Retrieval Augmented Generation (RAG) is proposed to answer any kind of users' queries so that they can find accurate information quickly. 
+
 ## Key Highlights
 1. Scrapy is used to crawl the webpages in [Once Human Wiki](https://once-human.fandom.com/wiki/Main_Page) to ensure performant scraping of large number of web pages.
 2. `Airflow` is used to automate and orchestrate the daily extraction of data from Reddit so that the LLM can keep up to date with the game information and events.

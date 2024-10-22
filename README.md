@@ -1,9 +1,4 @@
 # OnceHuman Chatbot
-Before running any of the projects, please create a virtual environment first. The steps for Windows OS is as follows (ensure that you're on the top-level directory):
-1. `py -m venv venv`
-2. `venv\Scripts\activate`
-3. `pip install -r requirements.txt`
-4. Run `deactivate` when want to quit venv
 
 ## Key Highlights
 1. Scrapy is used to crawl the webpages in [Once Human Wiki](https://once-human.fandom.com/wiki/Main_Page) to ensure performant scraping of large number of web pages.
@@ -26,6 +21,12 @@ Before running any of the projects, please create a virtual environment first. T
 - Reddit posts are scraped and extracted on a daily basis. 
 
 # Technical Notes & Findings
+Before running any of the projects, please create a virtual environment first. The steps for Windows OS is as follows (ensure that you're on the top-level directory):
+1. `py -m venv venv`
+2. `venv\Scripts\activate`
+3. `pip install -r requirements.txt`
+4. Run `deactivate` when want to quit venv
+
 ## Scrape Once Human Wiki
 This operation is done one time (during the beginning of the project) or occassionally when there's a major update that affect the game's mechanic, storyline, or overall content. It's achieved using Scrapy whereas the installation steps are as follow:
 1. `scrapy startproject oncehuman_wiki`

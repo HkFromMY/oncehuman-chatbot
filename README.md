@@ -2,7 +2,8 @@
 Before running any of the projects, please create a virtual environment first. The steps for Windows OS is as follows (ensure that you're on the top-level directory):
 1. `py -m venv venv`
 2. `venv\Scripts\activate`
-3. Run `deactivate` when want to quit venv
+3. `pip install -r requirements.txt`
+4. Run `deactivate` when want to quit venv
 
 ## Key Highlights
 1. Scrapy is used to crawl the webpages in [Once Human Wiki](https://once-human.fandom.com/wiki/Main_Page) to ensure performant scraping of large number of web pages.

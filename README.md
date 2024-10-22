@@ -4,6 +4,27 @@ Before running any of the projects, please create a virtual environment first. T
 2. `venv\Scripts\activate`
 3. Run `deactivate` when want to quit venv
 
+## Key Highlights
+1. Scrapy is used to crawl the webpages in [Once Human Wiki](https://once-human.fandom.com/wiki/Main_Page) to ensure performant scraping of large number of web pages.
+2. `Airflow` is used to automate and orchestrate the daily extraction of data from Reddit so that the LLM can keep up to date with the game information and events.
+3. `Pinecone` vector database is used to power the quick and efficient document retrieval process to ensure smooth chat experience with the LLM.
+4. `llama-3.1-70b-versatile` from [Chat Groq](https://console.groq.com/docs/models) is used to power the AI Chatbot as it provides huge large context window (128k tokens) and maximum token output length (8k tokens).
+5. Front-end is powered by `Streamlit` which the repository can be found in [Streamlit frontend project for Once Human chatbot](https://github.com/HkFromMY/oncehuman-frontend).
+
+## Data Architecture
+![Screenshot](https://github.com/HkFromMY/oncehuman-chatbot/blob/main/asset/data_architecture.png)
+
+## Structure of the Repo
+- `asset`: For images of the data architecture.
+- `notebooks`: Directory to store the notebooks used to find insights or experimenting with the external API.
+- `oncehuman_wiki`: The `scrapy` directory to scrape the data from Once Human wiki website.
+- `reddit_airflow`: The directory for all `airflow` related files like DAGs, ETL tasks, and pipelines.
+
+## Schedules of the data extracts
+- For data from Once Human wiki website, the data is scraped one time during the beginning of the project as the websites only updates after major updates.
+- Reddit posts are scraped and extracted on a daily basis. 
+
+# Technical Notes & Findings
 ## Scrape Once Human Wiki
 This operation is done one time (during the beginning of the project) or occassionally when there's a major update that affect the game's mechanic, storyline, or overall content. It's achieved using Scrapy whereas the installation steps are as follow:
 1. `scrapy startproject oncehuman_wiki`
@@ -64,6 +85,3 @@ This operation is done one time (during the beginning of the project) or occassi
 
 ## Solutions
 - Embed the documents by batches to avoid overwhelming the model and cause errors.
-
-## Front-end Repository
-- [Streamlit frontend project for Once Human chatbot](https://github.com/HkFromMY/oncehuman-frontend)

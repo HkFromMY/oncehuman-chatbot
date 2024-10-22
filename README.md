@@ -63,4 +63,7 @@ This operation is done one time (during the beginning of the project) or occassi
 - Switching to embedding endpoint also leads to `500: Internal Server Error` by `HuggingFaceEndpointEmbeddings` because there are too many number of documents to be embed at once, so the model timeout. 
 
 ## Solutions
-- Embed the documents by batches to avoid overwhelming the model and cause errors. 
+- Embed the documents by batches to avoid overwhelming the model and cause errors.
+
+## Front-end Repository
+- [Streamlit frontend project for Once Human chatbot](https://github.com/HkFromMY/oncehuman-frontend)
